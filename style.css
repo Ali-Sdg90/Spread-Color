@@ -1,0 +1,31 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body {
+    background: rgb(49, 49, 49);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+}
+#game-box {
+    border: 1px solid rgb(255, 255, 255);
+    width: 80vh;
+    height: 80vh;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+}
+#game-box div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid gray;
+    transition: background 0.15s;
+}
+#game-box div:hover {
+    background: rgb(79, 79, 79);
+}
