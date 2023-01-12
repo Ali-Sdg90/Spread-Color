@@ -9,6 +9,45 @@
     </head>
     <body>
         <div id="game-box"></div>
+        <div id="game-setting">
+            <p id="setting">Setting :</p>
+            <br />
+            <form>
+                <label for="game-size">Ground size (max 200) :</label>
+                <input type="number" name="game-size" id="game-size" />
+            </form>
+            <form>
+                <label for="spread-speed">Spread speed (ms) :</label>
+                <input type="number" name="spread-speed" id="spread-speed" />
+            </form>
+            <form>
+                <label for="spread-color">Spread color :</label>
+                <input type="color" name="spread-color" id="spread-color" />
+            </form>
+            <form>
+                <label for="game-accuracy">Accuracy (max 100) :</label>
+                <input type="number" name="game-accuracy" id="game-accuracy" />
+            </form>
+            <form>
+                <label for="show-debug">show debug in console</label>
+                <input type="checkbox" name="show-debug" id="show-debug" />
+            </form>
+            <hr />
+            <p>Spread method :</p>
+            <form id="radio-form">
+                <label for="spread-1-way">one way</label>
+                <input type="radio" name="spread-method" id="spread-1-way" />
+                <label for="spread-random">random</label>
+                <input type="radio" name="spread-method" id="spread-random" />
+            </form>
+            <hr />
+            <p>Remaining blocks : <span id="remaining-blocks"></span></p>
+            <div id="game-btns">
+                <button>Apply</button><br />
+                <button>Random start point</button><br />
+                <button>Reload</button>
+            </div>
+        </div>
         <script src="script.js"></script>
     </body>
 </html>

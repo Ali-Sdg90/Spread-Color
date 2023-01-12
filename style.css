@@ -2,6 +2,7 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    font-size: 2.7vh;
 }
 :root {
     --game-background: rgb(49, 49, 49);
@@ -13,23 +14,61 @@ body {
     align-items: center;
     width: 100%;
     height: 100vh;
+    gap: 10vh;
 }
 #game-box {
     border: 1px solid rgb(255, 255, 255);
     width: 80vh;
     height: 80vh;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: repeat(6, 1fr);
 }
 #game-box div {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid gray;
     transition: background 0.15s;
     background: var(--game-background);
+    overflow: hidden;
 }
 #game-box div:hover {
     background: rgb(79, 79, 79);
+}
+#game-setting {
+    width: 45vh;
+    height: 80vh;
+    padding: 2vh 1.5vh;
+    background: gray;
+    border-radius: 1vh;
+    position: relative;
+    box-shadow: 0 0vh 0.5vh gray;
+}
+#game-setting input {
+    width: 9vh;
+    height: 3.75vh;
+}
+#game-setting form {
+    display: grid;
+    margin-top: 1vh;
+    grid-template-columns: 5fr 1fr;
+}
+form#radio-form {
+    grid-template-columns: 3fr 1fr 3fr 1fr;
+}
+button {
+    margin: 1vh 0;
+    width: 100%;
+}
+#setting {
+    font-weight: 600;
+    font-size: 4vh;
+}
+#game-btns {
+    position: absolute;
+    bottom: 2vh;
+    width: 93%;
+}
+#game-setting hr {
+    margin: 2vh 0;
+    border: 1px solid black;
+    background-color: black;
 }

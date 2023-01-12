@@ -1,123 +1,118 @@
 const gameBox = document.getElementById("game-box");
-let startBlock = "";
-let wallBlock = [];
-let endBlock = "";
+let endLoop;
 let backgroundColor = "rgb(49, 49, 49)";
+let gameSize = 5;
+let delay = 100;
+let maxLoopCounter = 10;
 document.documentElement.style.setProperty(
     "--game-background",
     backgroundColor
 );
-for (let i = 0; i < 36; i++) {
+for (let i = 0; i < gameSize * gameSize; i++) {
     const addBlock = document.createElement("div");
-    addBlock.textContent = i;
+    // addBlock.textContent = i;
     gameBox.appendChild(addBlock);
 }
+gameBox.style.gridTemplateRows = `repeat(${gameSize},1fr)`;
+gameBox.style.gridTemplateColumns = `repeat(${gameSize},1fr)`;
 const Blockes = Array.from(document.querySelectorAll("#game-box div"));
 for (let i in Blockes) {
     Blockes[i].addEventListener("click", function () {
-        // console.log(Blockes[i].textContent);
-        // if (!startBlock) {
-        //     Blockes[i].style.background = "red";
-        //     startBlock = i;
-        // } else if (wallBlock.length <= 5) {
-        //     Blockes[i].style.background = "blue";
-        //     wallBlock.push(i);
-        //     console.log(wallBlock, wallBlock.length);
-        // } else if (!endBlock) {
-        //     Blockes[i].style.background = "yellow";
-        //     endBlock = i;
-        //     setTimeout(() => {
-        //         wayFinder(i);
-        //     }, 500);
-        // } else {
-        //     wayFinder(i);
-        // }
         Blockes[i].style.background = "pink";
         Blockes[i].style.border = "1px solid red";
+        endLoop = false;
         wayFinder(i);
     });
 }
 let randomDirection;
-let endLoop = false;
-const delay = 1000;
 function wayFinder(startPoint) {
     startPoint = Number(startPoint);
-    // console.log(startPoint, Blockes[startPoint].style.background);
-    // Blockes[startPoint].style.background = "pink";
     randomDirection = Math.floor(Math.random() * 4);
     loopChecker(startPoint);
     if (endLoop) return;
-    console.log(startPoint, randomDirection);
     switch (randomDirection) {
         case 0: // left
             if (
                 Blockes[startPoint - 1] &&
-                startPoint % 6 != 0 &&
+                startPoint % gameSize != 0 &&
                 Blockes[startPoint - 1].style.background != "pink"
             ) {
+                console.log(startPoint, "left");
                 setTimeout(() => {
                     wayFinder(startPoint - 1);
                     Blockes[startPoint - 1].style.background = "pink";
                 }, delay);
             } else {
-                wayFinder(startPoint)
+                wayFinder(startPoint);
             }
             break;
         case 1: // right
             if (
                 Blockes[startPoint + 1] &&
-                (startPoint + 1) % 6 != 0 &&
+                (startPoint + 1) % gameSize != 0 &&
                 Blockes[startPoint + 1].style.background != "pink"
             ) {
+                console.log(startPoint, "right");
                 setTimeout(() => {
                     wayFinder(startPoint + 1);
                     Blockes[startPoint + 1].style.background = "pink";
                 }, delay);
             } else {
-                wayFinder(startPoint)
+                wayFinder(startPoint);
             }
             break;
         case 2: // down
             if (
-                Blockes[startPoint + 6] &&
-                Blockes[startPoint + 6].style.background != "pink"
+                Blockes[startPoint + gameSize] &&
+                Blockes[startPoint + gameSize].style.background != "pink"
             ) {
+                console.log(startPoint, "down");
                 setTimeout(() => {
-                    wayFinder(startPoint + 6);
-                    Blockes[startPoint + 6].style.background = "pink";
+                    wayFinder(startPoint + gameSize);
+                    Blockes[startPoint + gameSize].style.background = "pink";
                 }, delay);
             } else {
-                wayFinder(startPoint)
+                wayFinder(startPoint);
             }
+            break;
         case 3: // up
             if (
-                Blockes[startPoint - 6] &&
-                Blockes[startPoint - 6].style.background != "pink"
+                Blockes[startPoint - gameSize] &&
+                Blockes[startPoint - gameSize].style.background != "pink"
             ) {
+                console.log(startPoint, "up");
                 setTimeout(() => {
-                    wayFinder(startPoint - 6);
-                    Blockes[startPoint - 6].style.background = "pink";
+                    wayFinder(startPoint - gameSize);
+                    Blockes[startPoint - gameSize].style.background = "pink";
                 }, delay);
             } else {
-                wayFinder(startPoint)
+                wayFinder(startPoint);
             }
-            break
+            break;
     }
 }
-let last5Moves = [36, 36, 36, 36, 36];
+let last20Moves = [];
+for (let i = 0; i < maxLoopCounter; i++) {
+    last20Moves[i] = null;
+}
 function loopChecker(randomDirection) {
     let loopCounter = 0;
-    for (let i of last5Moves) {
+    for (let i of last20Moves) {
         if (i == randomDirection) loopCounter++;
     }
-    // console.log("loopCounter = ", loopCounter);
-    if (loopCounter == 5) {
+    console.log(randomDirection, "=>", loopCounter, "/", maxLoopCounter);
+    if (loopCounter == maxLoopCounter) {
         endLoop = true;
-        console.log("END 5 for ",randomDirection);
+        console.log("END", maxLoopCounter, "for ", randomDirection);
     } else {
-        last5Moves.shift();
-        last5Moves.push(randomDirection);
-        console.log(last5Moves.join("."));
+        last20Moves.shift();
+        last20Moves.push(randomDirection);
+        // console.log(last20Moves.join("."));
         endLoop = false;
     }
+}
+const ev = document.createEvent("MouseEvent");
+
+for (let i = 0; i < 1; i++) {
+    // Blockes[Math.floor(Math.random() * Math.pow(gameSize, 2))].click();
 }
