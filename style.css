@@ -3,8 +3,11 @@
     margin: 0;
     box-sizing: border-box;
 }
+:root {
+    --game-background: rgb(49, 49, 49);
+}
 body {
-    background: rgb(49, 49, 49);
+    background: var(--game-background);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,6 +28,7 @@ body {
     align-items: center;
     border: 1px solid gray;
     transition: background 0.15s;
+    background: var(--game-background);
 }
 #game-box div:hover {
     background: rgb(79, 79, 79);
