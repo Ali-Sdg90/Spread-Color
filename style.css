@@ -6,6 +6,7 @@
 }
 :root {
     --game-background: rgb(49, 49, 49);
+    /* color: #ffc0cb; */
 }
 body {
     background: var(--game-background);
