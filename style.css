@@ -4,10 +4,6 @@
     box-sizing: border-box;
     font-size: 2.7vh;
 }
-:root {
-    --game-background: rgb(49, 49, 49);
-    /* color: #ffc0cb; */
-}
 body {
     background: var(--game-background);
     display: flex;
@@ -18,7 +14,7 @@ body {
     gap: 10vh;
 }
 #game-box {
-    border: 1px solid rgb(255, 255, 255);
+    border: 0.1vh solid rgb(255, 255, 255);
     width: 80vh;
     height: 80vh;
     display: grid;
@@ -28,8 +24,10 @@ body {
     justify-content: center;
     align-items: center;
     transition: background 0.15s;
-    background: var(--game-background);
     overflow: hidden;
+}
+#game-box div::selection {
+    background: transparent;
 }
 #game-box div:hover {
     background: rgb(79, 79, 79);
@@ -46,6 +44,7 @@ body {
 #game-setting input {
     width: 9vh;
     height: 3.75vh;
+    padding-left: 0.4vh;
 }
 #game-setting form {
     display: grid;
@@ -58,18 +57,27 @@ form#radio-form {
 button {
     margin: 1vh 0;
     width: 100%;
+    padding: 0.4vh 0;
+    border-radius: 0.5vh;
+    border: 0.1vh solid black;
+    transition: opacity 0.15s;
+}
+button:hover {
+    opacity: 0.9;
+}
+button:active {
+    opacity: 0.7;
 }
 #setting {
     font-weight: 600;
     font-size: 4vh;
-}
-#game-btns {
-    position: absolute;
-    bottom: 2vh;
-    width: 93%;
+    margin-bottom: 2vh;
 }
 #game-setting hr {
     margin: 2vh 0;
-    border: 1px solid black;
-    background-color: black;
+    border: 0.1vh solid black;
+    background-color: #ffeeee;
+}
+#remaining-blocks {
+    margin-bottom: 1vh;
 }
