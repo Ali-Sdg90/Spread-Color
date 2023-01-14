@@ -55,7 +55,11 @@
             </form>
             <form>
                 <label for="show-start-point">Show start point :</label>
-                <input type="checkbox" name="show-start-point" id="show-start-point" />
+                <input
+                    type="checkbox"
+                    name="show-start-point"
+                    id="show-start-point"
+                />
             </form>
             <form>
                 <label for="show-debug">Show debug in console :</label>
@@ -74,9 +78,17 @@
                 <input type="radio" name="spread-method" id="spread-random" />
             </form>
             <hr />
-            <p id="remaining-blocks">
-                Remaining blocks : <span id="remaining-blocks"></span>
-            </p>
+            <form title="*Turn off to improve performance">
+                <label for="show-remaining"
+                    >Remaining : <span id="remaining-blocks"></span> /
+                    <span id="all-blockes">100</span></label
+                >
+                <input
+                    type="checkbox"
+                    name="show-remaining"
+                    id="show-remaining"
+                />
+            </form>
             <div id="game-btns">
                 <button id="apply">Apply setting</button><br />
                 <button id="random-point">Random start point</button><br />

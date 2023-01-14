@@ -8,9 +8,9 @@ let changeColor = true;
 let showDebug = true;
 let showNums = false;
 let showStartPoint = true;
+let showRemaining = true;
 let startPoints = [];
 let Blockes;
-let remainingBlockes = 100;
 const backgroundColor = "rgb(49, 49, 49)";
 document
     .querySelector(":root")
@@ -51,6 +51,8 @@ if (showNums) document.getElementById("show-nums").checked = true;
 else document.getElementById("show-nums").checked = false;
 if (oneWayMethode) document.getElementById("spread-1-way").checked = true;
 else document.getElementById("spread-1-way").checked = false;
+if (showRemaining) document.getElementById("show-remaining").checked = true;
+else document.getElementById("show-remaining").checked = false;
 
 function makeGround() {
     for (let i = 0; i < gameSize * gameSize; i++) {
@@ -78,6 +80,7 @@ function makeGround() {
                     Blockes[i].style.border = `0.25vh solid ${oppositeColor()}`;
                 }
                 endLoop = false;
+                calcRemainig();
                 wayFinder(i, spreadColorRGB);
                 if (changeColor) spreadColorHEX = colorChanger();
                 document.getElementById("spread-color").value = spreadColorHEX;
@@ -94,6 +97,20 @@ function oppositeColor() {
     }
     return `rgb(${rgbNums[0]} ,${rgbNums[1]} ,${rgbNums[2]})`;
 }
+
+const remainingOutput = document.getElementById("remaining-blocks");
+function calcRemainig() {
+    if (showRemaining) {
+        let remaining = 0;
+        for (let i = 0; i < Blockes.length; i++) {
+            if (Blockes[i].style.background == backgroundColor) {
+                ++remaining;
+            }
+        }
+        remainingOutput.textContent = remaining;
+    }
+}
+calcRemainig();
 
 let randomDirection;
 function wayFinder(startPoint, blockColor) {
@@ -112,6 +129,7 @@ function wayFinder(startPoint, blockColor) {
                 setTimeout(() => {
                     wayFinder(startPoint - 1, blockColor);
                     Blockes[startPoint - 1].style.background = blockColor;
+                    calcRemainig();
                 }, delay);
             } else {
                 wayFinder(startPoint, blockColor);
@@ -127,6 +145,7 @@ function wayFinder(startPoint, blockColor) {
                 setTimeout(() => {
                     wayFinder(startPoint + 1, blockColor);
                     Blockes[startPoint + 1].style.background = blockColor;
+                    calcRemainig();
                 }, delay);
             } else {
                 wayFinder(startPoint, blockColor);
@@ -143,6 +162,7 @@ function wayFinder(startPoint, blockColor) {
                     wayFinder(startPoint + gameSize, blockColor);
                     Blockes[startPoint + gameSize].style.background =
                         blockColor;
+                    calcRemainig();
                 }, delay);
             } else {
                 wayFinder(startPoint, blockColor);
@@ -159,6 +179,7 @@ function wayFinder(startPoint, blockColor) {
                     wayFinder(startPoint - gameSize, blockColor);
                     Blockes[startPoint - gameSize].style.background =
                         blockColor;
+                    calcRemainig();
                 }, delay);
             } else {
                 wayFinder(startPoint, blockColor);
@@ -224,12 +245,13 @@ document
             20
         );
     });
+
 document.getElementById("apply").addEventListener("click", function () {
     if (gameSize != Number(document.getElementById("game-size").value)) {
         gameBox.textContent = "";
         gameSize = Number(document.getElementById("game-size").value);
         makeGround();
-        remainingBlockes = gameSize * gameSize;
+        calcRemainig();
     }
     delay = Number(document.getElementById("spread-speed").value);
     spreadColorHEX = document.getElementById("spread-color").value;
@@ -290,8 +312,16 @@ document.getElementById("apply").addEventListener("click", function () {
         document.getElementById("accuracy-form").style.pointerEvents = "none";
         maxLoopCounter = 3;
     }
+    if (document.getElementById("show-remaining").checked) {
+        showRemaining = true;
+        document.getElementById("all-blockes").textContent =
+            gameSize * gameSize;
+    } else {
+        document.getElementById("all-blockes").textContent = "-";
+        document.getElementById("remaining-blocks").textContent = "-";
+        showRemaining = false;
+    }
     createMaxLoopCounter();
-    console.log("=========");
 });
 
 document.getElementById("reloud").addEventListener("click", function () {

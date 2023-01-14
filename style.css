@@ -55,6 +55,9 @@ body {
 form#radio-form {
     grid-template-columns: 3fr 1fr 3fr 1fr;
 }
+#game-btns {
+    margin-top: 0.7vh;
+}
 button {
     margin: 0.7vh 0;
     width: 100%;
