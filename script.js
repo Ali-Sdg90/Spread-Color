@@ -7,7 +7,10 @@ let oneWayMethode = true;
 let changeColor = true;
 let showDebug = true;
 let showNums = false;
+let showStartPoint = true;
+let startPoints = [];
 let Blockes;
+let remainingBlockes = 100;
 const backgroundColor = "rgb(49, 49, 49)";
 document
     .querySelector(":root")
@@ -40,6 +43,8 @@ document.getElementById("spread-color").value = spreadColorHEX;
 document.getElementById("game-accuracy").value = maxLoopCounter;
 if (changeColor) document.getElementById("change-color").checked = true;
 else document.getElementById("change-color").checked = false;
+if (showStartPoint) document.getElementById("show-start-point").checked = true;
+else document.getElementById("show-start-point").checked = false;
 if (showDebug) document.getElementById("show-debug").checked = true;
 else document.getElementById("show-debug").checked = false;
 if (showNums) document.getElementById("show-nums").checked = true;
@@ -59,14 +64,23 @@ function makeGround() {
     Blockes.forEach(function (block) {
         block.style.background = backgroundColor;
     });
+    startPoints = [];
     for (let i in Blockes) {
         Blockes[i].addEventListener("click", function () {
+            if (Blockes[i].style.border) {
+                Blockes[i].style.border = "none";
+            }
             if (Blockes[i].style.background == backgroundColor) {
-                if (changeColor) spreadColorHEX = colorChanger();
+                startPoints.push(i, oppositeColor());
+                console.log(startPoints);
                 Blockes[i].style.background = spreadColorRGB;
-                Blockes[i].style.border = `0.25vh solid ${oppositeColor()}`;
+                if (showStartPoint) {
+                    Blockes[i].style.border = `0.25vh solid ${oppositeColor()}`;
+                }
                 endLoop = false;
                 wayFinder(i, spreadColorRGB);
+                if (changeColor) spreadColorHEX = colorChanger();
+                document.getElementById("spread-color").value = spreadColorHEX;
             }
         });
     }
@@ -167,22 +181,69 @@ function loopChecker(randomDirection) {
     console.log(randomDirection, "=>", loopCounter, "/", maxLoopCounter);
     if (loopCounter == maxLoopCounter) {
         endLoop = true;
-        console.log("END", maxLoopCounter, "for ", randomDirection);
+        console.log("End", maxLoopCounter, "for ", randomDirection);
     } else {
         last20Moves.shift();
         last20Moves.push(randomDirection);
         endLoop = false;
     }
 }
-// Blockes[Math.floor(Math.random() * Math.pow(gameSize, 2))].click();
+function inputChecker(inputValue, min, max, defaultValue) {
+    if (inputValue >= min && inputValue <= max && !isNaN(inputValue)) {
+        return inputValue;
+    } else {
+        console.log("-- Wrong input! --");
+        return defaultValue;
+    }
+}
+document.getElementById("game-size").addEventListener("focusout", function () {
+    document.getElementById("game-size").value = inputChecker(
+        document.getElementById("game-size").value,
+        1,
+        150,
+        10
+    );
+});
+document
+    .getElementById("spread-speed")
+    .addEventListener("focusout", function () {
+        document.getElementById("spread-speed").value = inputChecker(
+            document.getElementById("spread-speed").value,
+            0,
+            2000,
+            100
+        );
+    });
+document
+    .getElementById("game-accuracy")
+    .addEventListener("focusout", function () {
+        document.getElementById("game-accuracy").vgameBoxalue = inputChecker(
+            document.getElementById("game-accuracy").value,
+            2,
+            100,
+            20
+        );
+    });
 document.getElementById("apply").addEventListener("click", function () {
     if (gameSize != Number(document.getElementById("game-size").value)) {
         gameBox.textContent = "";
         gameSize = Number(document.getElementById("game-size").value);
         makeGround();
+        remainingBlockes = gameSize * gameSize;
     }
     delay = Number(document.getElementById("spread-speed").value);
     spreadColorHEX = document.getElementById("spread-color").value;
+    const hexToRgb = (hex) =>
+        hex
+            .replace(
+                /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
+                (m, r, g, b) => "#" + r + r + g + g + b + b
+            )
+            .substring(1)
+            .match(/.{2}/g)
+            .map((x) => parseInt(x, 16));
+    spreadColorRGB = `rgb(${hexToRgb(spreadColorHEX).join(", ")})`;
+    console.log(spreadColorHEX, spreadColorRGB);
     maxLoopCounter = Number(document.getElementById("game-accuracy").value);
     if (document.getElementById("change-color").checked) {
         changeColor = true;
@@ -190,6 +251,21 @@ document.getElementById("apply").addEventListener("click", function () {
         changeColor = false;
         spreadColorHEX = colorChanger();
         document.getElementById("spread-color").value = spreadColorHEX;
+    }
+    if (document.getElementById("show-start-point").checked) {
+        for (let i = 0; i < startPoints.length; i = i + 2) {
+            Blockes[startPoints[i]].style.border = `0.25vh solid ${
+                startPoints[i + 1]
+            }`;
+        }
+        showStartPoint = true;
+    } else {
+        Blockes.forEach(function (block) {
+            if (block.style.border) {
+                block.style.border = "none";
+            }
+        });
+        showStartPoint = false;
     }
     if (document.getElementById("show-debug").checked) {
         showDebug = true;
@@ -205,10 +281,9 @@ document.getElementById("apply").addEventListener("click", function () {
     }
     if (document.getElementById("spread-1-way").checked) {
         oneWayMethode = true;
-        document.getElementById("game-accuracy").style.PointerEvent = "auto";
-        document.getElementById("game-accuracy").value = 20;
+        // document.getElementById("game-accuracy").value = 20;
         document.getElementById("accuracy-form").style.pointerEvents = "auto";
-        maxLoopCounter = 20;
+        // maxLoopCounter = 20;
     } else {
         oneWayMethode = false;
         document.getElementById("game-accuracy").value = 3;
@@ -217,4 +292,23 @@ document.getElementById("apply").addEventListener("click", function () {
     }
     createMaxLoopCounter();
     console.log("=========");
+});
+
+document.getElementById("reloud").addEventListener("click", function () {
+    location.reload();
+});
+
+document.getElementById("random-point").addEventListener("click", function () {
+    let randNum = Math.floor(Math.random() * Math.pow(gameSize, 2));
+    let availableBlockes = 0;
+    Blockes.forEach(function (block) {
+        if (block.style.background == backgroundColor) {
+            availableBlockes++;
+        }
+    });
+    while (Blockes[randNum].style.background != backgroundColor) {
+        if (availableBlockes == 0) break;
+        randNum = Math.floor(Math.random() * Math.pow(gameSize, 2));
+    }
+    Blockes[randNum].click();
 });

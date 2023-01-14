@@ -11,32 +11,58 @@
         <div id="game-box"></div>
         <div id="game-setting">
             <p id="setting">Setting :</p>
-            <form>
-                <label for="game-size">Ground size (max 150) :</label>
-                <input type="number" name="game-size" id="game-size" />
+            <form title="max: 150   min: 1&#10;*Need reset ground to apply">
+                <label for="game-size">Ground size :</label>
+                <input
+                    type="number"
+                    name="game-size"
+                    id="game-size"
+                    min="1"
+                    max="150"
+                />
             </form>
-            <form>
+            <form title="min: 0   max: 2000">
                 <label for="spread-speed">Spread speed (ms) :</label>
-                <input type="number" name="spread-speed" id="spread-speed" />
+                <input
+                    type="number"
+                    name="spread-speed"
+                    id="spread-speed"
+                    min="0"
+                    max="2000"
+                />
             </form>
             <form>
                 <label for="spread-color">Spread color :</label>
                 <input type="color" name="spread-color" id="spread-color" />
             </form>
-            <form id="accuracy-form">
-                <label for="game-accuracy">Accuracy (max 100) :</label>
-                <input type="number" name="game-accuracy" id="game-accuracy" />
-            </form>
+            <div
+                title="min: 2   max:100&#10;*In random method you can't change accuracy"
+            >
+                <form id="accuracy-form">
+                    <label for="game-accuracy">Accuracy :</label>
+                    <input
+                        type="number"
+                        name="game-accuracy"
+                        id="game-accuracy"
+                        min="2"
+                        max="100"
+                    />
+                </form>
+            </div>
             <form>
-                <label for="change-color">Color change</label>
+                <label for="change-color">Color change :</label>
                 <input type="checkbox" name="change-color" id="change-color" />
             </form>
             <form>
-                <label for="show-debug">Show debug in console</label>
-                <input type="checkbox" name="show-debug" id="show-debug" />
+                <label for="show-start-point">Show start point :</label>
+                <input type="checkbox" name="show-start-point" id="show-start-point" />
             </form>
             <form>
-                <label for="show-nums">Show numbers</label>
+                <label for="show-debug">Show debug in console :</label>
+                <input type="checkbox" name="show-debug" id="show-debug" />
+            </form>
+            <form title="*Need reset ground to apply">
+                <label for="show-nums">Show numbers :</label>
                 <input type="checkbox" name="show-nums" id="show-nums" />
             </form>
             <hr />
@@ -48,11 +74,13 @@
                 <input type="radio" name="spread-method" id="spread-random" />
             </form>
             <hr />
-            <p id="remaining-blocks">Remaining blocks : <span id="remaining-blocks"></span></p>
+            <p id="remaining-blocks">
+                Remaining blocks : <span id="remaining-blocks"></span>
+            </p>
             <div id="game-btns">
-                <button id="apply">Apply</button><br />
+                <button id="apply">Apply setting</button><br />
                 <button id="random-point">Random start point</button><br />
-                <button id="reloud">Reload</button>
+                <button id="reloud">Reload page</button>
             </div>
         </div>
         <script src="script.js"></script>
