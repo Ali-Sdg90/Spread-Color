@@ -7,16 +7,27 @@ let oneWayMethode = true;
 let changeColor = true;
 let showDebug = true;
 let showNums = false;
-let showStartPoint = true;
+let showStartPoint = false;
 let showRemaining = true;
 let startPoints = [];
-let Blockes;
+let blocks;
 const backgroundColor = "rgb(49, 49, 49)";
 document
     .querySelector(":root")
     .style.setProperty("--game-background", backgroundColor);
+
+// Make HEX color, convert it to RGB and save it in spreadColorRGB and return HEX values
 const hexChar = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F"];
 function colorChanger() {
+    const hexToRgb = (hex) =>
+        hex
+            .replace(
+                /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
+                (m, r, g, b) => "#" + r + r + g + g + b + b
+            )
+            .substring(1)
+            .match(/.{2}/g)
+            .map((x) => parseInt(x, 16));
     let hexSaver = "#";
     for (let i = 0; i < 6; i++) {
         hexSaver += hexChar[Math.floor(Math.random() * 16)];
@@ -25,16 +36,7 @@ function colorChanger() {
     return hexSaver;
 }
 
-const hexToRgb = (hex) =>
-    hex
-        .replace(
-            /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
-            (m, r, g, b) => "#" + r + r + g + g + b + b
-        )
-        .substring(1)
-        .match(/.{2}/g)
-        .map((x) => parseInt(x, 16));
-
+// Set default values and check checkmarks in setting
 let spreadColorHEX = "#ffc0cb";
 spreadColorHEX = colorChanger();
 document.getElementById("game-size").value = gameSize;
@@ -54,6 +56,9 @@ else document.getElementById("spread-1-way").checked = false;
 if (showRemaining) document.getElementById("show-remaining").checked = true;
 else document.getElementById("show-remaining").checked = false;
 
+// Create blocks in gameBox and set style for them
+// Add addEventListener to blocks
+// reset startPoints
 function makeGround() {
     for (let i = 0; i < gameSize * gameSize; i++) {
         const addBlock = document.createElement("div");
@@ -62,22 +67,21 @@ function makeGround() {
     }
     gameBox.style.gridTemplateRows = `repeat(${gameSize},1fr)`;
     gameBox.style.gridTemplateColumns = `repeat(${gameSize},1fr)`;
-    Blockes = Array.from(document.querySelectorAll("#game-box div"));
-    Blockes.forEach(function (block) {
+    blocks = Array.from(document.querySelectorAll("#game-box div"));
+    blocks.forEach(function (block) {
         block.style.background = backgroundColor;
     });
     startPoints = [];
-    for (let i in Blockes) {
-        Blockes[i].addEventListener("click", function () {
-            if (Blockes[i].style.border) {
-                Blockes[i].style.border = "none";
+    for (let i in blocks) {
+        blocks[i].addEventListener("click", function () {
+            if (blocks[i].style.border) {
+                blocks[i].style.border = "none";
             }
-            if (Blockes[i].style.background == backgroundColor) {
+            if (blocks[i].style.background == backgroundColor) {
                 startPoints.push(i, oppositeColor());
-                console.log(startPoints);
-                Blockes[i].style.background = spreadColorRGB;
+                blocks[i].style.background = spreadColorRGB;
                 if (showStartPoint) {
-                    Blockes[i].style.border = `0.25vh solid ${oppositeColor()}`;
+                    blocks[i].style.border = `0.25vh solid ${oppositeColor()}`;
                 }
                 endLoop = false;
                 calcRemainig();
@@ -90,6 +94,7 @@ function makeGround() {
 }
 makeGround();
 
+// Return opposide color (RGB) for startPoints
 function oppositeColor() {
     let rgbNums = spreadColorRGB.split(",");
     for (let i = 0; i < 3; i++) {
@@ -98,12 +103,14 @@ function oppositeColor() {
     return `rgb(${rgbNums[0]} ,${rgbNums[1]} ,${rgbNums[2]})`;
 }
 
+// Calculate remaining blocks after every change in gameBox
+// It has a lot of impact on the performance!
 const remainingOutput = document.getElementById("remaining-blocks");
 function calcRemainig() {
     if (showRemaining) {
         let remaining = 0;
-        for (let i = 0; i < Blockes.length; i++) {
-            if (Blockes[i].style.background == backgroundColor) {
+        for (let i = 0; i < blocks.length; i++) {
+            if (blocks[i].style.background == backgroundColor) {
                 ++remaining;
             }
         }
@@ -112,6 +119,11 @@ function calcRemainig() {
 }
 calcRemainig();
 
+// The program chooses a random direction and if the conditions are right, it will go to that block.
+// Depending on the value of maxLoopCounter, it try to go to new house.
+// If the value of maxLoopCounter is 3, it means that each house will not move 3 times if unable to go to the new block and end loop.
+// In the random method, I did not allow changing the value of maxLoopCounter because many calculation operations would be complicated and the performance of the program would face problems.
+// In random method, break in end of cases don't read and it can spread because every way that can meet requirement calls wayFinder and like tree function grows
 let randomDirection;
 function wayFinder(startPoint, blockColor) {
     startPoint = Number(startPoint);
@@ -121,14 +133,14 @@ function wayFinder(startPoint, blockColor) {
     switch (randomDirection) {
         case 0: // left
             if (
-                Blockes[startPoint - 1] &&
+                blocks[startPoint - 1] &&
                 startPoint % gameSize != 0 &&
-                Blockes[startPoint - 1].style.background == backgroundColor
+                blocks[startPoint - 1].style.background == backgroundColor
             ) {
-                console.log(startPoint, "left");
+                if (showDebug) console.log(startPoint, "left");
                 setTimeout(() => {
                     wayFinder(startPoint - 1, blockColor);
-                    Blockes[startPoint - 1].style.background = blockColor;
+                    blocks[startPoint - 1].style.background = blockColor;
                     calcRemainig();
                 }, delay);
             } else {
@@ -137,14 +149,14 @@ function wayFinder(startPoint, blockColor) {
             if (oneWayMethode) break;
         case 1: // right
             if (
-                Blockes[startPoint + 1] &&
+                blocks[startPoint + 1] &&
                 (startPoint + 1) % gameSize != 0 &&
-                Blockes[startPoint + 1].style.background == backgroundColor
+                blocks[startPoint + 1].style.background == backgroundColor
             ) {
-                console.log(startPoint, "right");
+                if (showDebug) console.log(startPoint, "right");
                 setTimeout(() => {
                     wayFinder(startPoint + 1, blockColor);
-                    Blockes[startPoint + 1].style.background = blockColor;
+                    blocks[startPoint + 1].style.background = blockColor;
                     calcRemainig();
                 }, delay);
             } else {
@@ -153,15 +165,14 @@ function wayFinder(startPoint, blockColor) {
             if (oneWayMethode) break;
         case 2: // down
             if (
-                Blockes[startPoint + gameSize] &&
-                Blockes[startPoint + gameSize].style.background ==
+                blocks[startPoint + gameSize] &&
+                blocks[startPoint + gameSize].style.background ==
                     backgroundColor
             ) {
-                console.log(startPoint, "down");
+                if (showDebug) console.log(startPoint, "down");
                 setTimeout(() => {
                     wayFinder(startPoint + gameSize, blockColor);
-                    Blockes[startPoint + gameSize].style.background =
-                        blockColor;
+                    blocks[startPoint + gameSize].style.background = blockColor;
                     calcRemainig();
                 }, delay);
             } else {
@@ -170,15 +181,14 @@ function wayFinder(startPoint, blockColor) {
             if (oneWayMethode) break;
         case 3: // up
             if (
-                Blockes[startPoint - gameSize] &&
-                Blockes[startPoint - gameSize].style.background ==
+                blocks[startPoint - gameSize] &&
+                blocks[startPoint - gameSize].style.background ==
                     backgroundColor
             ) {
-                console.log(startPoint, "up");
+                if (showDebug) console.log(startPoint, "up");
                 setTimeout(() => {
                     wayFinder(startPoint - gameSize, blockColor);
-                    Blockes[startPoint - gameSize].style.background =
-                        blockColor;
+                    blocks[startPoint - gameSize].style.background = blockColor;
                     calcRemainig();
                 }, delay);
             } else {
@@ -187,33 +197,43 @@ function wayFinder(startPoint, blockColor) {
             if (oneWayMethode) break;
     }
 }
-let last20Moves = [];
+
+// LastMovesArray store moves and use it in loopChecker
+// The function is executed in the first run and with the apply button
+let lastMovesArray = [];
 function createMaxLoopCounter() {
     for (let i = 0; i < maxLoopCounter; i++) {
-        last20Moves[i] = null;
+        lastMovesArray[i] = null;
     }
 }
 createMaxLoopCounter();
+
+// Check if block can't move anywhere and stuck in loop
+// Its accuracy depends on maxLoopCounter
 function loopChecker(randomDirection) {
     let loopCounter = 0;
-    for (let i of last20Moves) {
+    for (let i of lastMovesArray) {
         if (i == randomDirection) loopCounter++;
     }
-    console.log(randomDirection, "=>", loopCounter, "/", maxLoopCounter);
+    if (showDebug)
+        console.log(randomDirection, "=>", loopCounter, "/", maxLoopCounter);
     if (loopCounter == maxLoopCounter) {
         endLoop = true;
-        console.log("End", maxLoopCounter, "for ", randomDirection);
+        if (showDebug)
+            console.log("End", maxLoopCounter, "for ", randomDirection);
     } else {
-        last20Moves.shift();
-        last20Moves.push(randomDirection);
+        lastMovesArray.shift();
+        lastMovesArray.push(randomDirection);
         endLoop = false;
     }
 }
+
+//For game-size spread-speed game-accuracy check input
 function inputChecker(inputValue, min, max, defaultValue) {
     if (inputValue >= min && inputValue <= max && !isNaN(inputValue)) {
         return inputValue;
     } else {
-        console.log("-- Wrong input! --");
+        if (showDebug) console.log("-- Wrong input! --");
         return defaultValue;
     }
 }
@@ -246,6 +266,7 @@ document
         );
     });
 
+// Apply setting button
 document.getElementById("apply").addEventListener("click", function () {
     if (gameSize != Number(document.getElementById("game-size").value)) {
         gameBox.textContent = "";
@@ -265,7 +286,6 @@ document.getElementById("apply").addEventListener("click", function () {
             .match(/.{2}/g)
             .map((x) => parseInt(x, 16));
     spreadColorRGB = `rgb(${hexToRgb(spreadColorHEX).join(", ")})`;
-    console.log(spreadColorHEX, spreadColorRGB);
     maxLoopCounter = Number(document.getElementById("game-accuracy").value);
     if (document.getElementById("change-color").checked) {
         changeColor = true;
@@ -276,13 +296,13 @@ document.getElementById("apply").addEventListener("click", function () {
     }
     if (document.getElementById("show-start-point").checked) {
         for (let i = 0; i < startPoints.length; i = i + 2) {
-            Blockes[startPoints[i]].style.border = `0.25vh solid ${
+            blocks[startPoints[i]].style.border = `0.25vh solid ${
                 startPoints[i + 1]
             }`;
         }
         showStartPoint = true;
     } else {
-        Blockes.forEach(function (block) {
+        blocks.forEach(function (block) {
             if (block.style.border) {
                 block.style.border = "none";
             }
@@ -294,7 +314,6 @@ document.getElementById("apply").addEventListener("click", function () {
     } else {
         showDebug = false;
     }
-    console.log(document.getElementById("show-nums").checked, showNums);
     if (document.getElementById("show-nums").checked != showNums) {
         gameBox.textContent = "";
         if (showNums) showNums = false;
@@ -303,9 +322,7 @@ document.getElementById("apply").addEventListener("click", function () {
     }
     if (document.getElementById("spread-1-way").checked) {
         oneWayMethode = true;
-        // document.getElementById("game-accuracy").value = 20;
         document.getElementById("accuracy-form").style.pointerEvents = "auto";
-        // maxLoopCounter = 20;
     } else {
         oneWayMethode = false;
         document.getElementById("game-accuracy").value = 3;
@@ -314,31 +331,39 @@ document.getElementById("apply").addEventListener("click", function () {
     }
     if (document.getElementById("show-remaining").checked) {
         showRemaining = true;
-        document.getElementById("all-blockes").textContent =
-            gameSize * gameSize;
+        document.getElementById("all-blocks").textContent = gameSize * gameSize;
     } else {
-        document.getElementById("all-blockes").textContent = "-";
+        document.getElementById("all-blocks").textContent = "-";
         document.getElementById("remaining-blocks").textContent = "-";
         showRemaining = false;
     }
     createMaxLoopCounter();
 });
 
-document.getElementById("reloud").addEventListener("click", function () {
+// Click on reload button to reset gameBox
+document.getElementById("reload").addEventListener("click", function () {
+    gameBox.textContent = "";
+    makeGround();
+    calcRemainig();
+});
+
+// Double click on reload button to reload page
+document.getElementById("reload").addEventListener("dblclick", function () {
     location.reload();
 });
 
+// Click on Random start point and simulate click on proper block
 document.getElementById("random-point").addEventListener("click", function () {
     let randNum = Math.floor(Math.random() * Math.pow(gameSize, 2));
-    let availableBlockes = 0;
-    Blockes.forEach(function (block) {
+    let availableblocks = 0;
+    blocks.forEach(function (block) {
         if (block.style.background == backgroundColor) {
-            availableBlockes++;
+            availableblocks++;
         }
     });
-    while (Blockes[randNum].style.background != backgroundColor) {
-        if (availableBlockes == 0) break;
+    while (blocks[randNum].style.background != backgroundColor) {
+        if (availableblocks == 0) break;
         randNum = Math.floor(Math.random() * Math.pow(gameSize, 2));
     }
-    Blockes[randNum].click();
+    blocks[randNum].click();
 });

@@ -14,7 +14,7 @@ body {
     gap: 10vh;
 }
 #game-box {
-    border: 0.1vh solid rgb(255, 255, 255);
+    border: 0.1vh solid white;
     width: 80vh;
     height: 80vh;
     display: grid;
