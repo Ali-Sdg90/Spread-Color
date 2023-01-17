@@ -16,7 +16,8 @@ document
     .querySelector(":root")
     .style.setProperty("--game-background", backgroundColor);
 
-// Make HEX color, convert it to RGB and save it in spreadColorRGB and return HEX values
+// Make HEX color, convert it to RGB and save it in spreadColorRGB and return HEX 
+// values
 const hexChar = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F"];
 function colorChanger() {
     const hexToRgb = (hex) =>
@@ -118,12 +119,16 @@ function calcRemainig() {
     }
 }
 calcRemainig();
-
-// The program chooses a random direction and if the conditions are right, it will go to that block.
-// Depending on the value of maxLoopCounter, it try to go to new house.
-// If the value of maxLoopCounter is 3, it means that each house will not move 3 times if unable to go to the new block and end loop.
-// In the random method, I did not allow changing the value of maxLoopCounter because many calculation operations would be complicated and the performance of the program would face problems.
-// In random method, break in end of cases don't read and it can spread because every way that can meet requirement calls wayFinder and like tree function grows
+// The program chooses a random direction and if the conditions are right, it will go 
+// to that block.
+// Depending on the value of maxLoopCounter, it tries to go to new house.
+// If the value of maxLoopCounter is 3, it means that each house will not move 3 times 
+// if unable to go to the new block and end loop.
+// In the random method, I did not allow changing the value of maxLoopCounter because 
+// many calculation operations would be complicated and the performance of the program 
+// would face problems.
+// In random method, break in end of cases don't read and it can spread because every 
+// way that can meet requirement calls wayFinder and like tree function grows
 let randomDirection;
 function wayFinder(startPoint, blockColor) {
     startPoint = Number(startPoint);
