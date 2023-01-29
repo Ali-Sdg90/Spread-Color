@@ -17,7 +17,7 @@ document
     .style.setProperty("--game-background", backgroundColor);
 
 // Make HEX color, convert it to RGB and save it in spreadColorRGB and return HEX 
-// values
+// values :
 const hexChar = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F"];
 function colorChanger() {
     const hexToRgb = (hex) =>
@@ -37,7 +37,7 @@ function colorChanger() {
     return hexSaver;
 }
 
-// Set default values and check checkmarks in setting
+// Set default values and check checkmarks in setting :
 let spreadColorHEX = "#ffc0cb";
 spreadColorHEX = colorChanger();
 document.getElementById("game-size").value = gameSize;
@@ -59,7 +59,7 @@ else document.getElementById("show-remaining").checked = false;
 
 // Create blocks in gameBox and set style for them
 // Add addEventListener to blocks
-// reset startPoints
+// reset startPoints :
 function makeGround() {
     for (let i = 0; i < gameSize * gameSize; i++) {
         const addBlock = document.createElement("div");
@@ -119,6 +119,7 @@ function calcRemainig() {
     }
 }
 calcRemainig();
+
 // The program chooses a random direction and if the conditions are right, it will go 
 // to that block.
 // Depending on the value of maxLoopCounter, it tries to go to new house.
@@ -128,7 +129,7 @@ calcRemainig();
 // many calculation operations would be complicated and the performance of the program 
 // would face problems.
 // In random method, break in end of cases don't read and it can spread because every 
-// way that can meet requirement calls wayFinder and like tree function grows
+// way that can meet requirement calls wayFinder and like tree function grows :
 let randomDirection;
 function wayFinder(startPoint, blockColor) {
     startPoint = Number(startPoint);
@@ -204,7 +205,7 @@ function wayFinder(startPoint, blockColor) {
 }
 
 // LastMovesArray store moves and use it in loopChecker
-// The function is executed in the first run and with the apply button
+// The function is executed in the first run and with the apply button :
 let lastMovesArray = [];
 function createMaxLoopCounter() {
     for (let i = 0; i < maxLoopCounter; i++) {
@@ -214,7 +215,7 @@ function createMaxLoopCounter() {
 createMaxLoopCounter();
 
 // Check if block can't move anywhere and stuck in loop
-// Its accuracy depends on maxLoopCounter
+// Its accuracy depends on maxLoopCounter :
 function loopChecker(randomDirection) {
     let loopCounter = 0;
     for (let i of lastMovesArray) {
@@ -233,7 +234,7 @@ function loopChecker(randomDirection) {
     }
 }
 
-//For game-size spread-speed game-accuracy check input
+//For game-size spread-speed game-accuracy check input :
 function inputChecker(inputValue, min, max, defaultValue) {
     if (inputValue >= min && inputValue <= max && !isNaN(inputValue)) {
         return inputValue;
@@ -271,7 +272,7 @@ document
         );
     });
 
-// Apply setting button
+// Apply setting button :
 document.getElementById("apply").addEventListener("click", function () {
     if (gameSize != Number(document.getElementById("game-size").value)) {
         gameBox.textContent = "";
@@ -345,19 +346,19 @@ document.getElementById("apply").addEventListener("click", function () {
     createMaxLoopCounter();
 });
 
-// Click on reload button to reset gameBox
+// Click on reload button to reset gameBox :
 document.getElementById("reload").addEventListener("click", function () {
     gameBox.textContent = "";
     makeGround();
     calcRemainig();
 });
 
-// Double click on reload button to reload page
+// Double click on reload button to reload page :
 document.getElementById("reload").addEventListener("dblclick", function () {
     location.reload();
 });
 
-// Click on Random start point and simulate click on proper block
+// Click on Random start point and simulate click on proper block :
 document.getElementById("random-point").addEventListener("click", function () {
     let randNum = Math.floor(Math.random() * Math.pow(gameSize, 2));
     let availableblocks = 0;
