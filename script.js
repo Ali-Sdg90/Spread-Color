@@ -91,6 +91,23 @@ function makeGround() {
                 document.getElementById("spread-color").value = spreadColorHEX;
             }
         });
+        blocks[i].addEventListener("touchstart", function () {
+            if (blocks[i].style.border) {
+                blocks[i].style.border = "none";
+            }
+            if (blocks[i].style.background == backgroundColor) {
+                startPoints.push(i, oppositeColor());
+                blocks[i].style.background = spreadColorRGB;
+                if (showStartPoint) {
+                    blocks[i].style.border = `0.25vh solid ${oppositeColor()}`;
+                }
+                endLoop = false;
+                calcRemainig();
+                wayFinder(i, spreadColorRGB);
+                if (changeColor) spreadColorHEX = colorChanger();
+                document.getElementById("spread-color").value = spreadColorHEX;
+            }
+        });
     }
 }
 makeGround();
